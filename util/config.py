@@ -21,7 +21,10 @@ _ = spark.catalog.setCurrentDatabase(config['database_name'])
 
 # DBTITLE 1,Setting Environmental Variables for tokens
 import os
+# for using OpenAI model
 os.environ['OPENAI_API_KEY'] = dbutils.secrets.get("qacb", "openai_key")
+# for using Databricks Dolly
+os.environ['HUGGINGFACEHUB_API_TOKEN'] = dbutils.secrets.get("qacb", "hf_key")
 
 # COMMAND ----------
 
@@ -43,14 +46,25 @@ config['temperature'] = 0.15
 
 # COMMAND ----------
 
+# DBTITLE 1,Set Dolly Model configs
+config['hf_embedding_model'] = 'all-MiniLM-L12-v2'
+config['hf_chat_model'] = 'databricks/dolly-v2-12b'
+
+# COMMAND ----------
+
 # DBTITLE 1,Set evaluation config
 config["eval_dataset_path"] = "./data/eval_data.tsv"
 
 # COMMAND ----------
 
 # DBTITLE 1,Set deployment config
+# for OpenAI
 config['openai_key_secret_scope'] = "qacb"
 config['openai_key_secret_key'] = "openai_key"
+# for Dolly
+config['hf_key_secret_scope'] = "qacb"
+config['hf_key_secret_key'] = "hf_key"
+
 config['serving_endpoint_name'] = "llm-qabot-endpoint"
 
 # COMMAND ----------

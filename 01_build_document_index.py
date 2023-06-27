@@ -64,8 +64,13 @@ dbutils.fs.rm(config['vector_store_path'][5:], True)
 # DBTITLE 1,Import Required Functions
 import pyspark.sql.functions as fn
 import json
+
 from langchain.text_splitter import TokenTextSplitter
+# with OpenAI model
 from langchain.embeddings.openai import OpenAIEmbeddings
+# with Dolly
+from langchain.embeddings import HuggingFaceEmbeddings
+
 from langchain.vectorstores.faiss import FAISS
 
 # COMMAND ----------
@@ -262,6 +267,36 @@ vector_store = FAISS.from_texts(
 
 # MAGIC %md
 # MAGIC So that we make use of our vector store in subsequent notebooks, let's persist it to storage:
+
+# COMMAND ----------
+
+# MAGIC %md
+# MAGIC # Using Huggingface
+
+# COMMAND ----------
+
+# download embeddings model
+original_model = SentenceTransformer(config['hf_embedding_model'])
+
+# COMMAND ----------
+
+# encoder path
+embedding_model_path = f"/dbfs/tmp/qabot/embedding_model"
+ 
+# make sure path is clear
+dbutils.fs.rm(embedding_model_path.replace('/dbfs','dbfs:'), recurse=True)
+ 
+# reload model using langchain wrapper
+original_model.save(embedding_model_path)
+embedding_model = HuggingFaceEmbeddings(model_name=embedding_model_path)
+
+# COMMAND ----------
+
+vector_store = FAISS.from_texts(
+    embedding=embedding_model,
+    texts=text_inputs,
+    metadatas=metadata_inputs
+)
 
 # COMMAND ----------
 
