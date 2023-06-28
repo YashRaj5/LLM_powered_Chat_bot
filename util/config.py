@@ -49,6 +49,7 @@ config['temperature'] = 0.15
 # DBTITLE 1,Set Dolly Model configs
 config['hf_embedding_model'] = 'all-MiniLM-L12-v2'
 config['hf_chat_model'] = 'databricks/dolly-v2-12b'
+config['hf_embedding_model_loc'] = "/dbfs/tmp/qabot/embedding_model"
 
 # COMMAND ----------
 

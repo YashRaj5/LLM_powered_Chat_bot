@@ -61,6 +61,14 @@ dbutils.fs.rm(config['vector_store_path'][5:], True)
 
 # COMMAND ----------
 
+# MAGIC %pip install sentence-transformers==2.2.2 urllib3==1.26.6
+
+# COMMAND ----------
+
+dbutils.library.restartPython()
+
+# COMMAND ----------
+
 # DBTITLE 1,Import Required Functions
 import pyspark.sql.functions as fn
 import json
@@ -69,6 +77,7 @@ from langchain.text_splitter import TokenTextSplitter
 # with OpenAI model
 from langchain.embeddings.openai import OpenAIEmbeddings
 # with Dolly
+from sentence_transformers import SentenceTransformer
 from langchain.embeddings import HuggingFaceEmbeddings
 
 from langchain.vectorstores.faiss import FAISS
@@ -96,6 +105,10 @@ raw = (
 )
 
 display(raw)
+
+# COMMAND ----------
+
+dbutils.fs.ls(f"{config['kb_documents_path']}/source")
 
 # COMMAND ----------
 
